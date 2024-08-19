@@ -1,0 +1,121 @@
+<template>
+  <br>
+<div class="container">
+  <h2 style="text-align: center;">บันทึกเวลาการทำงาน</h2>
+  <label for="date" style="margin-left: 10px">
+    <input type="date" v-model="selectedDate"/>
+  </label>
+  <br><br>
+    <table>
+      <thead>
+        <tr>
+          <th>ผู้รับ</th>
+          <th>เริ่มงาน</th>
+          <th>จบงาน</th>
+          <th>วันที่</th>
+        </tr>
+      </thead>
+      <tbody class="scrollable-tbody">
+        <tr v-for="(item, index) in filteredItems" :key="index">
+          <td>{{ item.ผู้รับ }}</td>
+          <td>{{ item.stretcher_register_send_time }}</td>
+          <td>{{ item.stretcher_register_return_time }}</td>
+          <td>{{ formatDate(item.stretcher_register_accept_date) }}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+</template>
+
+<script>
+import axios from 'axios';
+import { ref, onMounted, computed } from 'vue';
+
+export default {
+  name: 'DataFetcher',
+  setup() {
+    const items = ref([]);
+    const selectedDate = ref('');
+
+    onMounted(() => {
+      axios.get('http://localhost:3000/api/timestamp')
+        .then((response) => {
+          items.value = response.data;
+        })
+        .catch((error) => {
+          console.error('There was an error fetching the data:', error);
+        });
+    });
+
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const filteredItems = computed(() => {
+      if (!selectedDate.value) {
+        return items.value;
+      }
+      return items.value.filter((item) => formatDate(item.stretcher_register_accept_date)
+       === selectedDate.value);
+    });
+
+    return {
+      items,
+      formatDate,
+      selectedDate,
+      filteredItems,
+    };
+  },
+};
+</script>
+
+<style scoped>
+.container{
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 4rem;
+  padding-left: 4rem;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  background-color: #FFFFFF;
+  text-align: center;
+}
+th {
+  background-color: #f2f2f2;
+  text-align: center;
+}
+h2{
+  font-size: 32px;
+  color: #FFFFFF;
+}
+
+.scrollable-tbody {
+  display: block;
+  max-height: 400px; /* Adjust this value as needed */
+  overflow-y: auto;
+}
+
+.scrollable-tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+thead, tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+</style>

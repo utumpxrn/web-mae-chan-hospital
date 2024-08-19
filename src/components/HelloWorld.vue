@@ -1,60 +1,169 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router" target="_blank" rel="noopener">router</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-vuex" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <br><br>
+  <div class="charts">
+    <div class="chart">
+      <div >
+        <canvas class="line" ref="ChartLi" style="background-color: #FFFFFF; border-radius: 10px;">
+        </canvas>
+      </div>
+      <div>
+        <canvas class="bar" ref="myChart" style="background-color: #FFFFFF; border-radius: 10px;">
+        </canvas>
+      </div>
+    </div>
+    <div class="table">
+      <Table />
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String,
+import axios from 'axios';
+import { ref, onMounted, defineComponent } from 'vue';
+import { Chart, registerables } from 'chart.js';
+import Table from './TableHome.vue';
+
+export default defineComponent({
+  name: 'DataFetcher',
+  setup() {
+    const items = ref([]);
+    const dayLabels = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+    const monthLable = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+    const dayCounts = ref(new Array(7).fill(0));
+    const monthCounts = ref(new Array(12).fill(0));
+    const myChart = ref(null);
+    const ChartLi = ref(null);
+
+    const createChartLi = (data) => {
+      const ctx = ChartLi.value.getContext('2d');
+      Chart.register(...registerables);
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: monthLable,
+          datasets: [{
+            label: 'การทำงานภายในเดือนนี้',
+            data,
+            borderWidth: 1,
+          }],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    };
+
+    const createChart = (data) => {
+      const ctx = myChart.value.getContext('2d');
+      Chart.register(...registerables);
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: dayLabels,
+          datasets: [{
+            label: 'การทำงานภายในสัปดาห์นี้',
+            data,
+            borderWidth: 1,
+          }],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    };
+
+    onMounted(() => {
+      axios.get('http://localhost:3000/api/timestamp')
+        .then((response) => {
+          items.value = response.data;
+
+          // Convert the timestamp to day of the week and count occurrences
+          items.value.forEach((item) => {
+            const date = new Date(item.stretcher_register_accept_date);
+            const dayIndex = date.getDay(); // 0 for Sunday, 1 for Monday, etc.
+            dayCounts.value[dayIndex] += 1;
+          });
+
+          items.value.forEach((item) => {
+            const date = new Date(item.stretcher_register_accept_date);
+            const monthIndex = date.getMonth(); // 0 for January, 1 for February, etc.
+            monthCounts.value[monthIndex] += 1;
+          });
+
+          // Create the chart after processing data
+          createChart(dayCounts.value);
+          createChartLi(monthCounts.value);
+          console.log(dayCounts.value);
+        })
+        .catch((error) => {
+          console.error('There was an error fetching the data:', error);
+        });
+    });
+
+    return {
+      items,
+      dayCounts,
+      monthCounts,
+      myChart,
+      ChartLi,
+    };
   },
-};
+
+  components: {
+    Table,
+  },
+});
+
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
+.date-label {
   display: inline-block;
-  margin: 0 10px;
+  margin: 10px 0;
 }
-a {
-  color: #42b983;
+
+.date-input {
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.charts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chart {
+  display: grid;
+  grid-template-columns: 1fr;
+  flex: 1;
+  gap: 10px;
+}
+
+.table{
+  flex: 1;
+
+}
+
+.bar{
+  width: 100%;
+  height: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+  .charts {
+    flex-direction: row;
+  }
 }
 </style>
