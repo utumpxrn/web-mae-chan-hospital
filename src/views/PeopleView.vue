@@ -14,7 +14,7 @@
     </label>
     <br>
     <label for="date" style="margin-left: 10px">
-      <input type="date" v-model="selectedDate"/>
+      <input type="date" v-model="selectedDate" class="border border-black rounded-md px-2"/>
   </label>
     <br><br>
     <div class="grid">
