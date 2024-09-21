@@ -15,11 +15,11 @@
     <br>
     <label for="date" style="margin-left: 10px">
       <input type="date" v-model="selectedDate" class="border border-black rounded-md px-2"/>
-  </label>
+    </label>
     <br><br>
     <div class="grid">
-      <div class="box">รับแล้ว<br><br>{{ fil.length }}</div>
-      <div class="box">งานที่สำเร็จ<br><br>{{ fil.length }}</div>
+      <div class="box">รับแล้ว<br><br>{{ filteredItems.length }}</div>
+      <div class="box">งานที่สำเร็จ<br><br>{{ completedItems.length }}</div>
     </div>
     <br>
     <table>
@@ -51,10 +51,23 @@ export default {
   name: 'DataFetcher',
   setup() {
     const items = ref([]);
-    const selectedOption = ref('ทั้งหมด'); // Set a default value or leave it empty
+    const selectedOption = ref('ทั้งหมด');
     const selectedDate = ref('');
 
+    // Get today's date in YYYY-MM-DD format
+    const getTodayDate = () => {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0'); // Zero-based month
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
     onMounted(() => {
+      // Automatically set selectedDate to today's date
+      selectedDate.value = getTodayDate();
+
+      // Fetch data
       axios.get('http://localhost:3000/api/people')
         .then((response) => {
           items.value = response.data;
@@ -64,37 +77,50 @@ export default {
         });
     });
 
+    // Format date as YYYY-MM-DD
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Zero-based month
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     };
 
-    const filteredItems = computed(() => items.value.filter((item) => {
-      const matchName = selectedOption.value === 'ทั้งหมด' || item.ผู้รับ === selectedOption.value;
-      const matchDate = !selectedDate.value || formatDate(item.stretcher_register_accept_date)
-      === selectedDate.value;
-      return matchName && matchDate;
-    }));
+    // Sort and filter items by name and date
+    const filteredItems = computed(() => {
+      const sortedItems = [...items.value].sort((a, b) => {
+        const dateA = new Date(a.stretcher_register_accept_date);
+        const dateB = new Date(b.stretcher_register_accept_date);
+        return dateB - dateA; // Sort by latest date first
+      });
 
+      const matchName = selectedOption.value === 'ทั้งหมด';
+      // const matchDate = selectedDate.value === getTodayDate();
+
+      return sortedItems.filter((item) => {
+        const isNameMatch = matchName || item.ผู้รับ === selectedOption.value;
+        const isDateMatch = !selectedDate.value
+         || formatDate(item.stretcher_register_accept_date) === selectedDate.value;
+        return isNameMatch && isDateMatch;
+      });
+    });
+
+    // Unique names for the dropdown
     const uniqueNames = computed(() => {
       const namesSet = new Set(items.value.map((item) => item.ผู้รับ));
       return Array.from(namesSet);
     });
 
-    const fil = computed(() => (selectedOption.value === 'ทั้งหมด'
-      ? items.value
-      : items.value.filter((item) => item.ผู้รับ === selectedOption.value)));
+    // Filter completed items
+    const completedItems = computed(() => filteredItems.value.filter((item) => item.stretcher_work_status_id === 'completed')); // Adjust based on your completion status
 
     return {
       items,
       selectedOption,
-      fil,
-      uniqueNames,
-      filteredItems,
       selectedDate,
+      filteredItems,
+      uniqueNames,
+      completedItems,
       formatDate,
     };
   },
@@ -141,14 +167,9 @@ th, td {
   font-size: 20px;
 }
 
-.name-select {
-  border-radius: 8px;
-  background-color: aqua;
-}
-
 .scrollable-tbody {
   display: block;
-  max-height: 400px; /* Adjust this value as needed */
+  max-height: 400px;
   overflow-y: auto;
 }
 

@@ -16,7 +16,7 @@
         <tr v-for="(name, index) in filteredNames" :key="index">
           <td>{{ name }}</td>
           <td>{{ nameCounts[name] }}</td>
-          <td>{{ calculateTotalTimeForName(name) }} นาที</td>
+          <td>{{ calculateTotalTimeForName(name) }}</td>
         </tr>
       </tbody>
     </table>
@@ -44,14 +44,6 @@ export default {
         });
     };
 
-    const getCurrentDate = () => {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Zero-based month
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    };
-
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       const year = date.getFullYear();
@@ -62,8 +54,7 @@ export default {
 
     const filteredItems = computed(() => {
       if (!selectedDate.value) {
-        return items.value.filter((item) => formatDate(item.stretcher_register_accept_date)
-          === selectedDate.value);
+        return items.value;
       }
       return items.value.filter((item) => formatDate(item.stretcher_register_accept_date)
         === selectedDate.value);
@@ -85,15 +76,9 @@ export default {
 
     onMounted(() => {
       fetchUsers();
-      selectedDate.value = getCurrentDate();
     });
 
     const calculateTimeDifference = (sendTime, returnTime) => {
-      // Check if sendTime and returnTime are defined
-      if (!sendTime || !returnTime) {
-        return 0; // Return 0 if either is undefined or null
-      }
-
       const timeToSeconds = (time) => {
         const [hours, minutes, seconds] = time.split(':').map(Number);
         return hours * 3600 + minutes * 60 + seconds;
@@ -108,37 +93,36 @@ export default {
         timeDifference += 86400; // 24 hours in seconds
       }
 
-      return timeDifference; // Return the difference in seconds, not as a formatted string
+      return timeDifference;
     };
 
-    const secondsToTime = (seconds) => {
-      const hours = Math.floor(seconds / 3600).toString().padStart(2, '0');
-      const minutes = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
-      const secs = (seconds % 60).toString().padStart(2, '0');
-      return `${hours}:${minutes}:${secs}`;
+    // Function to filter items by name
+    const getItemsForName = (name) => {
+      return filteredItems.value.filter((item) =>
+        item.ผู้รับ === name && item.stretcher_register_send_time && item.stretcher_register_return_time);
     };
 
+    // Function to calculate total time for a name
     const calculateTotalTimeForName = (name) => {
-      const itemsForName = filteredItems.value.filter((item) => item.ผู้รับ === name);
+      const itemsForName = getItemsForName(name);
       let totalSeconds = 0;
 
       itemsForName.forEach((item) => {
-        const t = item.stretcher_register_send_time;
-        const d = item.stretcher_register_return_time;
-        totalSeconds += calculateTimeDifference(t, d);
+        totalSeconds += calculateTimeDifference(item.stretcher_register_send_time, item.stretcher_register_return_time);
       });
 
-      return secondsToTime(totalSeconds);
+      const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+      const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+      const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+
+      return `${hours}:${minutes}:${seconds}`;
     };
 
-    // Make sure filteredItems is returned so it's available in the template
     return {
       selectedDate,
       filteredNames,
       nameCounts,
       formatDate,
-      calculateTimeDifference,
-      filteredItems, // Return filteredItems here
       calculateTotalTimeForName,
     };
   },
@@ -178,11 +162,5 @@ th {
 
 td {
   border-bottom: 1px solid #1F2C42;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
 }
 </style>

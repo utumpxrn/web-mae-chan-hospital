@@ -37,7 +37,18 @@ export default {
     const items = ref([]);
     const selectedDate = ref('');
 
+    // Get today's date in YYYY-MM-DD format
+    const getTodayDate = () => {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    // Set selectedDate to today's date when the component is mounted
     onMounted(() => {
+      selectedDate.value = getTodayDate();
       axios.get('http://localhost:3000/api/timestamp')
         .then((response) => {
           items.value = response.data;
@@ -50,17 +61,24 @@ export default {
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+      const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     };
 
     const filteredItems = computed(() => {
+      const sortedItems = [...items.value].sort((a, b) => {
+        const dateA = new Date(a.stretcher_register_accept_date);
+        const dateB = new Date(b.stretcher_register_accept_date);
+        return dateB - dateA; // Sort by latest date first
+      });
+
       if (!selectedDate.value) {
-        return items.value;
+        return sortedItems;
       }
-      return items.value.filter((item) => formatDate(item.stretcher_register_accept_date)
-       === selectedDate.value);
+
+      return sortedItems.filter((item) => formatDate(item.stretcher_register_accept_date)
+        === selectedDate.value);
     });
 
     return {
@@ -68,9 +86,11 @@ export default {
       formatDate,
       selectedDate,
       filteredItems,
+      getTodayDate,
     };
   },
 };
+
 </script>
 
 <style scoped>

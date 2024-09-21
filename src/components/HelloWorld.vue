@@ -92,13 +92,15 @@ export default defineComponent({
             const date = new Date(item.stretcher_register_accept_date);
             const dayIndex = date.getDay(); // 0 for Sunday, 1 for Monday, etc.
             dayCounts.value[dayIndex] += 1;
-          });
-
-          items.value.forEach((item) => {
-            const date = new Date(item.stretcher_register_accept_date);
             const monthIndex = date.getMonth(); // 0 for January, 1 for February, etc.
             monthCounts.value[monthIndex] += 1;
           });
+
+          // items.value.forEach((item) => {
+          //   const date = new Date(item.stretcher_register_accept_date);
+          //   const monthIndex = date.getMonth(); // 0 for January, 1 for February, etc.
+          //   monthCounts.value[monthIndex] += 1;
+          // });
 
           // Create the chart after processing data
           createChart(dayCounts.value);

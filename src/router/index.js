@@ -5,6 +5,8 @@ import PeopleView from '../views/PeopleView.vue';
 import TimeView from '../views/TimeView.vue';
 import LineChart from '../components/LineChart.vue';
 import BarChart from '../components/BarChart.vue';
+import LoginView from '../views/LoginView.vue';
+import RegisterView from '../views/RegisterView.vue';
 
 const routes = [
   {
@@ -36,6 +38,16 @@ const routes = [
     path: '/bar',
     name: 'bar',
     component: BarChart,
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView,
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterView,
   },
 ];
 
