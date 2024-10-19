@@ -1,18 +1,23 @@
 <template>
   <div class="leaderboard">
-    <p class="text-2xl flex justify-center">ตารางอันดับ</p>
+    <p class="text-2xl flex justify-center">ตารางอันดับการทำงาน</p>
     <label for="date" class="flex justify-end py-2">
       <input type="date" class="border border-black rounded-md px-2" v-model="selectedDate" />
     </label>
     <table>
       <thead>
         <tr>
-          <th>ชื่อ</th>
-          <th>รอบ</th>
-          <th>เวลารวม</th>
+          <th>ชื่อผู้รับงาน</th>
+          <th>จำนวนรอบ</th>
+          <th>เวลาเฉลี่ยรวม</th>
         </tr>
       </thead>
       <tbody>
+        <!-- Check if there is no data in filteredNames -->
+        <tr v-if="filteredNames.length === 0">
+          <td colspan="3" class="mx-auto text-center">ไม่มีข้อมูล</td>
+        </tr>
+        <!-- Display the data when available -->
         <tr v-for="(name, index) in filteredNames" :key="index">
           <td>{{ name }}</td>
           <td>{{ nameCounts[name] }}</td>
@@ -167,12 +172,13 @@ table {
 
 th,
 td {
-  padding: 10px;
-  text-align: left;
+  border: 1px solid #dddddd;
+  padding: 8px;
+  text-align: center;
 }
 
 th {
-  background-color: #59a2db;
+  background-color:rgb(113, 207, 238);
   font-weight: bold;
 }
 

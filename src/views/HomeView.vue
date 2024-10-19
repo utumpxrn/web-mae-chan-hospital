@@ -1,53 +1,67 @@
 <template>
-  <div class="container">
-    <HelloWorld />
+  <br><br>
+<div class="container">
+  <div class="charts">
+    <div class="chart">
+      <div class="">
+        <LineChart/>
+      </div>
+      <div>
+        <BarChart/>
+      </div>
+    </div>
+    <div class="table">
+      <TableHome/>
+    </div>
   </div>
+</div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+import TableHome from '@/components/TableHome.vue';
+import BarChart from '@/components/BarChart.vue';
+import LineChart from '@/components/LineChart.vue';
 
-export default {
-  name: 'HomeView',
+export default ({
   components: {
-    HelloWorld,
+    TableHome,
+    BarChart,
+    LineChart,
   },
-};
+});
+
 </script>
 
-<style>
+<style scoped>
+.charts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chart {
+  display: grid;
+  grid-template-columns: 1fr;
+  flex: 1;
+  gap: 10px;
+}
+
+.table {
+  flex: 1;
+}
+
+@media (min-width: 768px) {
+  .charts {
+    flex-direction: row;
+  }
+}
 
 .container {
   width: 100%;
   margin-right: auto;
   margin-left: auto;
-  padding-right: 4rem;
-  padding-left: 4rem;
+  padding-right: 2rem;
+  padding-left: 2rem;
 }
-@media(min-width: 640px) {
-  .container {
-    max-width: 640px;
-  }
-}
-@media(min-width: 768px) {
-  .container {
-    max-width: 768px;
-  }
-}
-@media(min-width: 1024px) {
-  .container {
-    max-width: 1024px;
-  }
-}
-@media(min-width: 1280px) {
-  .container {
-    max-width: 1280px;
-  }
-}
-@media(min-width: 1536px) {
-  .container {
-    max-width: 1536px;
-  }
-}
+
 </style>

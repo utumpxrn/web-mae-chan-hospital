@@ -18,8 +18,8 @@
     </label>
     <br><br>
     <div class="grid">
-      <div class="box">รับแล้ว<br><br>{{ filteredItems.length }}</div>
-      <div class="box">งานที่สำเร็จ<br><br>{{ completedItems.length }}</div>
+      <div class="box">จำนวนงานที่รับแล้ว<br><br>{{ filteredItems.length }}</div>
+      <div class="box">จำนวนงานที่สำเร็จ<br><br>{{ completedItems.length }}</div>
     </div>
     <br>
     <table>
@@ -32,6 +32,9 @@
         </tr>
       </thead>
       <tbody class="scrollable-tbody">
+        <tr v-if="filteredItems.length === 0">
+          <td colspan="4" class="mx-auto text-center">ไม่มีข้อมูล</td>
+        </tr>
         <tr v-for="(item, index) in filteredItems" :key="index">
           <td>{{ formatDate(item.stretcher_register_accept_date) }}</td>
           <td>{{ item.from_depcode }}</td>
@@ -112,7 +115,7 @@ export default {
     });
 
     // Filter completed items
-    const completedItems = computed(() => filteredItems.value.filter((item) => item.stretcher_work_status_id === 'completed')); // Adjust based on your completion status
+    const completedItems = computed(() => filteredItems.value.filter((item) => item.stretcher_work_status_id === 2)); // Adjust based on your completion status
 
     return {
       items,
@@ -142,7 +145,6 @@ table {
 }
 th, td {
   border: 1px solid #dddddd;
-  text-align: left;
   padding: 8px;
   text-align: center;
 }

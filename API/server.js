@@ -74,18 +74,19 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
+
 app.post('/api/addusers', async (req, res) => {
-  const { ไอดี, ชื่อ, ตำแหน่ง } = req.body;
+  const { ID, Name, Role } = req.body;
 
   try {
     // Check if user with the same ID already exists
-    const [existingUser] = await db.query('SELECT * FROM users WHERE ไอดี = ?', [ไอดี]);
+    const [existingUser] = await db.query('SELECT * FROM users WHERE ID = ?', [ID]);
     if (existingUser.length > 0) {
       return res.status(400).json({ error: 'User with this ID already exists' });
     }
 
     // Insert new user into the database
-    await db.query('INSERT INTO users (ชื่อ, ตำแหน่ง) VALUES (?, ?)', [ชื่อ, ตำแหน่ง]);
+    await db.query('INSERT INTO users (Name, Role) VALUES (?, ?)', [Name, Role]);
 
     res.status(201).json({ message: 'User added successfully' });
   } catch (err) {
@@ -95,20 +96,20 @@ app.post('/api/addusers', async (req, res) => {
 
 //Register
 app.post('/api/register/', async (req, res) => {
-  const { username, email, password, name } = req.body;
+  const { Username, Email, Password, Name } = req.body;
   try {
     // Validate input data
-    if (!username || !email || !password || !name) {
+    if (!Username || !Email || !Password || !Name) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
     // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const HashedPassword = await bcrypt.hash(Password, 10);
 
     // Insert new user into the database
     const [rows] = await db.query(
-      `INSERT INTO users (ชื่อ, Email, Password, Username) VALUES (?, ?, ?, ?)`,
-      [username, email, hashedPassword, name]
+      `INSERT INTO users (Name, Email, Password, Username) VALUES (?, ?, ?, ?)`,
+      [Username, Email, HashedPassword, Name]
     );
 
     // Return success message
@@ -121,16 +122,16 @@ app.post('/api/register/', async (req, res) => {
 
 // Sign-In
 app.post('/api/signIn', async (req, res) => {
-  const { username, password } = req.body;
+  const { Username, Password } = req.body;
 
   try {
     // Validate input data
-    if (!username || !password) {
+    if (!Username || !Password) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
     // Check if user exists in the database
-    const [rows] = await db.query(`SELECT * FROM users WHERE Username = ?`, [username]);
+    const [rows] = await db.query(`SELECT * FROM users WHERE Username = ?`, [Username]);
 
     if (rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -139,7 +140,7 @@ app.post('/api/signIn', async (req, res) => {
     const user = rows[0];
 
     // Compare the password with the hashed password stored in the database
-    const isPasswordValid = await bcrypt.compare(password, user.Password);
+    const isPasswordValid = await bcrypt.compare(Password, user.Password);
 
     if (!isPasswordValid) {
       return res.status(401).json({ error: 'Invalid password' });

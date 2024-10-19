@@ -12,15 +12,15 @@
         <thead>
           <tr>
             <th>ไอดี พนักงาน</th>
-            <th>ชื่อ</th>
+            <th>ชื่อพนักงาน</th>
             <th>ตำแหน่ง</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
-            <td>{{ item.ไอดี }}</td>
-            <td>{{ item.ชื่อ }}</td>
-            <td>{{ item.ตำแหน่ง }}</td>
+            <td>{{ item.ID }}</td>
+            <td>{{ item.Name }}</td>
+            <td>{{ item.Role }}</td>
           </tr>
         </tbody>
       </table>
@@ -31,13 +31,13 @@
           @keydown.space="showModal = false">&times;</span>
           <h2>เพิ่มบุคคล</h2>
           <form @submit.prevent="addUser">
-            <label For="name">ชื่อ:
-              <input type="text" id="name" v-model="newUser.name" class="mt-1 block w-full
+            <label For="name">Name:
+              <input type="text" id="name" v-model="newUser.Name" class="mt-1 block w-full
             border border-slate-500 rounded-md focus:outline-none pl-1" required><br><br>
             </label>
 
-            <label For="position">ตำแหน่ง:
-              <input type="text" id="position" v-model="newUser.position" class="mt-1 block w-full
+            <label For="position">Role:
+              <input type="text" id="position" v-model="newUser.Role" class="mt-1 block w-full
             border border-slate-500 rounded-md focus:outline-none pl-1" required><br><br>
             </label>
 
@@ -61,14 +61,15 @@ export default {
     const items = ref([]);
     const showModal = ref(false);
     const newUser = ref({
-      name: '',
-      position: '',
+      Name: '',
+      Role: '',
     });
 
     const fetchUsers = () => {
       axios.get('http://localhost:3000/api/users')
         .then((response) => {
           items.value = response.data;
+          console.log(items);
         })
         .catch((error) => {
           console.error('There was an error fetching the data:', error);
@@ -77,13 +78,13 @@ export default {
 
     const addUser = () => {
       axios.post('http://localhost:3000/api/addusers', {
-        ชื่อ: newUser.value.name,
-        ตำแหน่ง: newUser.value.position,
+        Name: newUser.value.Name,
+        Role: newUser.value.Role,
       })
         .then(() => {
           fetchUsers(); // Refresh the list
           showModal.value = false; // Close the modal
-          newUser.value = { ชื่อ: '', ตำแหน่ง: '' }; // Reset the form
+          newUser.value = { Name: '', Role: '' }; // Reset the form
         })
         .catch((error) => {
           console.error('There was an error adding the user:', error);

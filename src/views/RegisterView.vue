@@ -1,39 +1,39 @@
 <template>
-    <div class="min-h-screen bg-sky-200 flex items-center justify-center">
+    <div class="min-h-screen flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-md w-80">
             <h2 class="text-2xl font-bold mb-6 text-center text-black">ลงทะเบียน</h2>
             <form @submit.prevent="register">
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="Username">
                         ชื่อผู้ใช้
-                    <input v-model="username"
+                    <input v-model="Username"
                     class="shadow appearance-none border rounded w-full py-2 px-3
                     text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     type="text" placeholder="ชื่อผู้ใช้"/>
                     </label>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="Email">
                         อีเมล
-                    <input v-model="email"
+                    <input v-model="Email"
                         class="shadow appearance-none border rounded w-full py-2
                         px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         type="email" placeholder="อีเมล"/>
                     </label>
                 </div>
                   <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="Name">
                       ชื่อ
-                    <input v-model="name"
+                    <input v-model="Name"
                         class="shadow appearance-none border rounded w-full py-2
                         px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         type="text" placeholder="ชื่อ"/>
                     </label>
                 </div>
                 <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="Password">
                     รหัสผ่าน
-                    <input v-model="password"
+                    <input v-model="Password"
                     class="shadow appearance-none border rounded w-full py-2 px-3
                     text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     type="password" placeholder="รหัสผ่าน"/>
@@ -57,17 +57,17 @@ import axios from 'axios';
 
 export default {
   setup() {
-    const username = ref('');
-    const email = ref('');
-    const password = ref('');
-    const name = ref('');
+    const Username = ref('');
+    const Email = ref('');
+    const Password = ref('');
+    const Name = ref('');
 
     const register = () => {
       axios.post('http://localhost:3000/api/register/', {
-        username: username.value,
-        email: email.value,
-        password: password.value,
-        name: name.value,
+        Username: Username.value,
+        Email: Email.value,
+        Password: Password.value,
+        Name: Name.value,
       })
         .then((response) => {
           console.log('Registration successful', response.data);
@@ -79,10 +79,10 @@ export default {
     };
 
     return {
-      username,
-      email,
-      password,
-      name,
+      Username,
+      Email,
+      Password,
+      Name,
       register,
     };
   },

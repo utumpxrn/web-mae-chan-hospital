@@ -1,21 +1,21 @@
 <template>
-  <div class="min-h-screen bg-sky-200 flex items-center justify-center">
+  <div class="min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-80">
       <h2 class="text-2xl font-bold mb-6 text-center text-black">เข้าสู่ระบบ</h2>
       <form @submit.prevent="signIn">
         <div class="mb-4">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="Username">
             <input
-            v-model="username"
+            v-model="Username"
             class="shadow appearance-none border rounded w-full py-2 px-3
             text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="ชื่อ"/>
+            placeholder="ชื่อผู้ใช้"/>
           </label>
         </div>
         <div class="mb-6">
-          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="Password">
             <input
-            v-model="password"
+            v-model="Password"
             class="shadow appearance-none border rounded w-full py-2 px-3
             text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="password" placeholder="รหัสผ่าน"/>
@@ -39,14 +39,14 @@ import axios from 'axios';
 
 export default {
   setup() {
-    const username = ref('');
-    const password = ref('');
+    const Username = ref('');
+    const Password = ref('');
 
     const signIn = () => {
-      console.log('Login submitted', { username: username.value, password: password.value });
+      console.log('Login submitted', { Username: Username.value, Password: Password.value });
       axios.post('http://localhost:3000/api/signIn', {
-        username: username.value,
-        password: password.value,
+        Username: Username.value,
+        Password: Password.value,
       })
         .then((response) => {
           console.log('Login successful', response.data);
@@ -61,8 +61,8 @@ export default {
     };
 
     return {
-      username,
-      password,
+      Username,
+      Password,
       signIn,
     };
   },

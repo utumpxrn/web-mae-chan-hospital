@@ -37,5 +37,10 @@
     "postcss": "^8.4.40",
     "tailwindcss": "^3.4.7",
     "vue-cli-plugin-tailwind": "~3.0.0"
+  },
+  "eslintConfig": {
+    "rules": {
+      "max-len": ["error", { "code": 220 }]
+    }
   }
 }

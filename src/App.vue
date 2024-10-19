@@ -2,10 +2,10 @@
   <nav>
     <img alt="photo" src="https://maechanhospital.go.th/images/logo66.png" style="width: 160px; height: auto; "/>
     <div>
-      <router-link to="/">แดชบอร์ด</router-link>
-      <router-link to="/people">บุคคล</router-link>
+      <router-link to="/">สถิติการทำงาน</router-link>
+      <router-link to="/people">การทำงานรายบุคคล</router-link>
       <router-link to="/time">บันทึกเวลาการทำงาน</router-link>
-      <router-link to="/about">รายชื่อพนักงาน</router-link>
+      <router-link to="/name">รายชื่อพนักงาน</router-link>
     </div>
   </nav>
   <div class="content">
