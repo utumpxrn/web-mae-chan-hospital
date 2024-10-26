@@ -39,7 +39,7 @@ export default {
     const selectedDate = ref('');
 
     const fetchUsers = () => {
-      axios.get('http://localhost:3000/api/people')
+      axios.get('http://localhost/my-draft2/phpchatbot-jew/people.php')
         .then((response) => {
           items.value = response.data;
           console.log(response.data);

@@ -71,7 +71,7 @@ export default {
       selectedDate.value = getTodayDate();
 
       // Fetch data
-      axios.get('http://localhost/phpchatbot-jew/people.php')
+      axios.get('http://localhost/my-draft2/phpchatbot-jew/people.php')
         .then((response) => {
           items.value = response.data;
         })

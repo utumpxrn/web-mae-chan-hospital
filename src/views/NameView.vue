@@ -66,7 +66,7 @@ export default {
     });
 
     const fetchUsers = () => {
-      axios.get('http://localhost/phpchatbot-jew/user.php')
+      axios.get('http://localhost/my-draft2/phpchatbot-jew/user.php')
         .then((response) => {
           items.value = response.data;
           console.log(items);
