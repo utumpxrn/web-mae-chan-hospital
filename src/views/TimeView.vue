@@ -52,7 +52,7 @@ export default {
     // Set selectedDate to today's date when the component is mounted
     onMounted(() => {
       selectedDate.value = getTodayDate();
-      axios.get('http://localhost:3000/api/timestamp')
+      axios.get('http://localhost/phpchatbot-jew/timestamp.php')
         .then((response) => {
           items.value = response.data;
         })
