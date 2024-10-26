@@ -71,7 +71,7 @@ export default {
       selectedDate.value = getTodayDate();
 
       // Fetch data
-      axios.get('http://localhost:3000/api/people')
+      axios.get('http://localhost:3000/API/people')
         .then((response) => {
           items.value = response.data;
         })
@@ -84,7 +84,7 @@ export default {
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Zero-based month
+      const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     };
@@ -115,7 +115,8 @@ export default {
     });
 
     // Filter completed items
-    const completedItems = computed(() => filteredItems.value.filter((item) => item.stretcher_work_status_id === 2)); // Adjust based on your completion status
+    const completedItems = computed(() => filteredItems
+      .value.filter((item) => item.stretcher_work_status_id === 3));
 
     return {
       items,

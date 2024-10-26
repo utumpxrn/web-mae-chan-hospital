@@ -1,6 +1,7 @@
 <template>
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="bg-white p-8 rounded-lg shadow-md w-80">
+    <div class="absolute w-[100dvw] h-[80dvh]">
+        <div class="absolute bg-white px-10 py-10 rounded-lg shadow-md w-1/4 top-1/2 left-1/2
+            justify-center items-center transform -translate-x-1/2 -translate-y-1/2">
             <h2 class="text-2xl font-bold mb-6 text-center text-black">ลงทะเบียน</h2>
             <form @submit.prevent="register">
                 <div class="mb-4">

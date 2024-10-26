@@ -66,7 +66,7 @@ export default {
     });
 
     const fetchUsers = () => {
-      axios.get('http://localhost:3000/api/users')
+      axios.get('http://localhost:3000/API/users')
         .then((response) => {
           items.value = response.data;
           console.log(items);
