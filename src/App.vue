@@ -117,4 +117,20 @@ nav a.router-link-exact-active {
   font-size: 22px;
   margin-right: 5px;
 }
+
+.swal2-title {
+  font-family: 'K2D', sans-serif;
+}
+
+.swal2-content {
+  font-family: 'K2D', sans-serif;
+}
+
+.swal2-confirm, .swal2-cancel {
+  font-family: 'K2D', sans-serif;
+}
+
+.swal2-html-container{
+  font-family: 'K2D', sans-serif;
+}
 </style>

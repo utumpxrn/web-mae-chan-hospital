@@ -23,6 +23,12 @@ switch ($method) {
     case 'POST':
         handlePost($pdo, $input);
         break;
+    case 'PUT':
+        handleEdit($pdo, $input);
+        break;
+    case 'DELETE':
+        handleDelete($pdo, $input);
+        break;
     default:
         http_response_code(405); // 405 Method Not Allowed
         echo json_encode(['message' => 'Invalid request method']);
@@ -68,6 +74,82 @@ function handlePost($pdo, $input) {
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['error' => 'Failed to insert data', 'details' => $e->getMessage()]);
+    }
+}
+
+function handleEdit($pdo, $input) {
+    try {
+        $ID = $input['ID'] ?? null;
+        $Name = $input['Name'] ?? null;
+        $Role = $input['Role'] ?? null;
+
+        // Validate input
+        if (!$ID || !$Name || !$Role) {
+            http_response_code(400); // Bad Request
+            echo json_encode(['message' => 'Missing required fields']);
+            return;
+        }
+
+        // Check if user exists
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE ID = :ID");
+        $stmt->bindParam(':ID', $ID);
+        $stmt->execute();
+        $existingUser = $stmt->fetch();
+
+        if (!$existingUser) {
+            http_response_code(404); // Not Found
+            echo json_encode(['message' => 'User not found']);
+            return;
+        }
+
+        // Update user in the database
+        $stmt = $pdo->prepare("UPDATE users SET Name = :Name, Role = :Role WHERE ID = :ID");
+        $stmt->bindParam(':ID', $ID);
+        $stmt->bindParam(':Name', $Name);
+        $stmt->bindParam(':Role', $Role);
+        $stmt->execute();
+
+        http_response_code(200); // OK
+        echo json_encode(['message' => 'User updated successfully']);
+    } catch (PDOException $e) {
+        http_response_code(500); // Internal Server Error
+        echo json_encode(['error' => 'Database error', 'details' => $e->getMessage()]);
+    }
+}
+
+function handleDelete($pdo, $input) {
+    try {
+        $ID = $input['ID'] ?? null;
+
+        // Validate ID input
+        if (!$ID) {
+            http_response_code(400); // Bad Request
+            echo json_encode(['message' => 'Missing required ID']);
+            return;
+        }
+
+        // Check if user exists
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE ID = :ID");
+        $stmt->bindParam(':ID', $ID);
+        $stmt->execute();
+        $existingUser = $stmt->fetch();
+
+        if (!$existingUser) {
+            http_response_code(404); // Not Found
+            echo json_encode(['message' => 'User not found']);
+            return;
+        }
+
+        // Delete user from the database
+        $stmt = $pdo->prepare("DELETE FROM users WHERE ID = :ID");
+        $stmt->bindParam(':ID', $ID);
+        $stmt->execute();
+
+        http_response_code(200); // OK
+        echo json_encode(['message' => 'User deleted successfully']);
+    } catch (PDOException $e) {
+        http_response_code(500); // Internal Server Error
+        echo json_encode(['error' => 'Database error', 'details' => $e->getMessage()]);
     }
 }
 ?>

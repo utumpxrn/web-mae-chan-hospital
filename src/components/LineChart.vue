@@ -1,7 +1,7 @@
 <template>
   <div class="charts">
     <div class="chart">
-      <div >
+      <div>
         <canvas class="line" ref="ChartLi" style="background-color: #FFFFFF; border-radius: 10px;
         width: 600px;">
         </canvas>
@@ -43,18 +43,55 @@ export default defineComponent({
         },
         options: {
           scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'เดือน',
+                font: {
+                  family: 'K2D', // Custom font for Y-axis
+                  size: 14,
+                  weight: 'bold',
+                },
+              },
+              ticks: {
+                font: {
+                  family: 'K2D', // Custom font for X-axis ticks (labels)
+                  size: 12,
+                  style: 'italic',
+                  weight: 'bold',
+                },
+              },
+            },
             y: {
               beginAtZero: true,
               min: 0,
               max: 50,
+              title: {
+                display: true,
+                text: 'จำนวนรอบ',
+                font: {
+                  family: 'K2D', // Custom font for Y-axis
+                  size: 14,
+                  weight: 'bold',
+                },
+              },
+              ticks: {
+                font: {
+                  family: 'K2D', // Custom font for X-axis ticks (labels)
+                  size: 12,
+                  style: 'italic',
+                  weight: 'bold',
+                },
+              },
             },
           },
           plugins: {
             legend: {
               labels: {
                 font: {
-                  size: 15,
-                  family: 'K2D',
+                  family: 'K2D', // Custom font for Y-axis
+                  size: 14,
+                  weight: 'bold',
                 },
               },
             },

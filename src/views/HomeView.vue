@@ -1,20 +1,14 @@
 <template>
-  <br><br>
-<div class="container">
-  <div class="charts">
-    <div class="chart">
-      <div class="">
-        <LineChart/>
+  <br>
+  <div class="container">
+    <div class="charts">
+      <div class="chart">
+        <LineChart />
+        <BarChart />
       </div>
-      <div>
-        <BarChart/>
-      </div>
-    </div>
-    <div class="table">
-      <TableHome/>
+      <TableHome />
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -22,17 +16,22 @@ import TableHome from '@/components/TableHome.vue';
 import BarChart from '@/components/BarChart.vue';
 import LineChart from '@/components/LineChart.vue';
 
-export default ({
+export default {
   components: {
     TableHome,
     BarChart,
     LineChart,
   },
-});
-
+};
 </script>
 
 <style scoped>
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
 .charts {
   display: flex;
   flex-direction: column;
@@ -41,13 +40,7 @@ export default ({
 
 .chart {
   display: grid;
-  grid-template-columns: 1fr;
-  flex: 1;
   gap: 10px;
-}
-
-.table {
-  flex: 1;
 }
 
 @media (min-width: 768px) {
@@ -55,13 +48,4 @@ export default ({
     flex-direction: row;
   }
 }
-
-.container {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-  padding-right: 2rem;
-  padding-left: 2rem;
-}
-
 </style>

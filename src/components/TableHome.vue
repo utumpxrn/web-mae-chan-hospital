@@ -158,6 +158,7 @@ export default {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
+  height: 100%;
 }
 
 h2 {

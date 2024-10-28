@@ -1,12 +1,11 @@
 <template>
-  <br>
   <div class="container">
     <div>
       <h2 class="text-3xl" style="text-align: center;">รายชื่อพนักงาน</h2>
       <div class="mb-4">
-        <button class="bg-white rounded-md p-1"
-        @click="showModal = true" @keydown.enter="showModal = true"
-          style="margin-left: 90%;">เพิ่มบุคคล +</button>
+        <button class="add-button" @click="showAddModal = true"
+        @keydown.enter="showAddModal = true">เพิ่มบุคคล
+          +</button>
       </div>
       <table>
         <thead>
@@ -14,6 +13,7 @@
             <th>ไอดี พนักงาน</th>
             <th>ชื่อพนักงาน</th>
             <th>ตำแหน่ง</th>
+            <th>จัดการ</th>
           </tr>
         </thead>
         <tbody>
@@ -21,29 +21,54 @@
             <td>{{ item.ID }}</td>
             <td>{{ item.Name }}</td>
             <td>{{ item.Role }}</td>
+           <td>
+            <button class="edit-button" @click="openEditModal(item)">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="delete-button" @click="deleteUser(item.ID)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
           </tr>
         </tbody>
       </table>
+
       <!-- Modal for adding new employee -->
-      <div v-if="showModal" class="modal">
+      <div v-if="showAddModal" class="modal">
         <div class="modal-content">
-          <span class="close" @click="showModal = false" @keydown.enter="showModal = false"
-          @keydown.space="showModal = false">&times;</span>
-          <h2>เพิ่มบุคคล</h2>
+          <span class="close" @click="showAddModal = false" @keydown.enter="showAddModal = false"
+            @keydown.space="showAddModal = false">&times;</span>
+          <h2 class=" text-black py-4">เพิ่มบุคคล</h2>
           <form @submit.prevent="addUser">
-            <label For="name">Name:
-              <input type="text" id="name" v-model="newUser.Name" class="mt-1 block w-full
-            border border-slate-500 rounded-md focus:outline-none pl-1" required><br><br>
+            <label for="Name">ชื่อ:
+              <input type="text" id="Name" v-model="newUser.Name" class="input-field" required />
             </label>
 
-            <label For="position">Role:
-              <input type="text" id="position" v-model="newUser.Role" class="mt-1 block w-full
-            border border-slate-500 rounded-md focus:outline-none pl-1" required><br><br>
+            <label for="Role">ตำแหน่ง:
+              <input type="text" id="Role" v-model="newUser.Role" class="input-field" required />
             </label>
 
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2
-            rounded-md hover:bg-blue-600
-            focus:outline-none focus:bg-blue-600">เพิ่ม</button>
+            <button type="submit" class="submit-button">เพิ่ม</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Edit Employee Modal -->
+      <div v-if="showEditModal" class="modal">
+        <div class="modal-content">
+          <span class="close" @click="showEditModal = false"
+          @keydown.space="showAddModal = false">&times;</span>
+          <h2>แก้ไขบุคคล</h2>
+          <form @submit.prevent="updateUser">
+            <label for="editName">ชื่อ:
+              <input type="text" id="editName" v-model="editUser.Name"
+              class="input-field" required />
+            </label>
+            <label for="editRole">ตำแหน่ง:
+              <input type="text" id="editRole" v-model="editUser.Role"
+              class="input-field" required />
+            </label>
+            <button type="submit" class="submit-button">อัปเดต</button>
           </form>
         </div>
       </div>
@@ -54,16 +79,16 @@
 <script>
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
+import Swal from 'sweetalert2';
 
 export default {
   name: 'DataFetcher',
   setup() {
     const items = ref([]);
-    const showModal = ref(false);
-    const newUser = ref({
-      Name: '',
-      Role: '',
-    });
+    const showAddModal = ref(false);
+    const showEditModal = ref(false);
+    const newUser = ref({ Name: '', Role: '' });
+    const editUser = ref({ ID: '', Name: '', Role: '' });
 
     const fetchUsers = () => {
       axios.get('http://localhost/my-draft2/phpchatbot-jew/user.php')
@@ -77,18 +102,76 @@ export default {
     };
 
     const addUser = () => {
-      axios.post('http://localhost:3000/api/addusers', {
+      axios.post('http://localhost/my-draft2/phpchatbot-jew/user.php', {
         Name: newUser.value.Name,
         Role: newUser.value.Role,
       })
         .then(() => {
           fetchUsers(); // Refresh the list
-          showModal.value = false; // Close the modal
+          showAddModal.value = false; // Close the modal
           newUser.value = { Name: '', Role: '' }; // Reset the form
         })
         .catch((error) => {
           console.error('There was an error adding the user:', error);
         });
+    };
+
+    const openEditModal = (user) => {
+      editUser.value = { ...user }; // Clone the user object
+      showEditModal.value = true;
+    };
+
+    const updateUser = () => {
+      axios.put('http://localhost/my-draft2/phpchatbot-jew/user.php', {
+        ID: editUser.value.ID, // ID of the user to be updated
+        Name: editUser.value.Name,
+        Role: editUser.value.Role,
+      })
+        .then(() => {
+          fetchUsers(); // Refresh the user list after updating
+          showEditModal.value = false; // Close the edit modal
+          editUser.value = { ID: '', Name: '', Role: '' }; // Reset the edit form
+        })
+        .catch((error) => {
+          console.error('There was an error updating the user:', error);
+        });
+    };
+
+    const deleteUser = (userID) => {
+      // Show SweetAlert2 confirmation dialog
+      Swal.fire({
+        title: 'คุณต้องการลบหรือไม่?',
+        text: 'การกระทำนี้ไม่สามารถยกเลิกได้',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'ใช่',
+        cancelButtonText: 'ยกเลิก',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Proceed with deletion if confirmed
+          axios.delete('http://localhost/my-draft2/phpchatbot-jew/user.php', {
+            data: { ID: userID },
+          })
+            .then(() => {
+              fetchUsers(); // Refresh the user list after deletion
+              Swal.fire(
+                'เสร็จสิ้น!',
+                'รายชื่อได้ถูกลบแล้ว',
+                'success',
+              );
+            })
+            .catch((error) => {
+              console.error('There was an error deleting the user:', error);
+              Swal.fire(
+                'เกิดข้อผิดพลาด!',
+                'เกิดข้อผิดพลาดในการลบผู้ใช้.',
+                'error',
+              );
+            });
+        }
+      });
     };
 
     onMounted(() => {
@@ -97,9 +180,14 @@ export default {
 
     return {
       items,
-      showModal,
+      showAddModal,
+      showEditModal,
       newUser,
+      editUser,
       addUser,
+      openEditModal,
+      updateUser,
+      deleteUser,
     };
   },
 };
@@ -108,55 +196,98 @@ export default {
 <style>
 .container {
   width: 100%;
-  margin-right: auto;
+  margin: 0 auto;
+  padding: 0 4rem;
+}
+
+.add-button {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
   margin-left: auto;
-  padding-right: 4rem;
-  padding-left: 4rem;
+  display: block;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-button:hover {
+  background-color: #f2f2f2;
 }
 
 .modal {
   position: fixed;
-  z-index: 1;
+  z-index: 10;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 30%;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  width: 80%;
+  max-width: 500px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #333;
   cursor: pointer;
 }
 
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
+.input-field {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: #29b6f6;
+  box-shadow: 0 0 5px rgba(41, 182, 246, 0.5);
+}
+
+.submit-button {
+  background-color: #29b6f6;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #0288d1;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 1rem;
 }
 
 th,
 td {
-  border: 1px solid #dddddd;
-  padding: 8px;
-  background: #FFFFFF;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  background: #fff;
   text-align: center;
 }
 
@@ -167,5 +298,29 @@ th {
 h2 {
   color: #FFFFFF;
   font-size: 32px;
+}
+
+.edit-button,
+.delete-button {
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  color: #fff;
+  margin: 0 4px;
+}
+
+.edit-button {
+  background-color: #29b6f6;
+}
+
+.delete-button {
+  background-color: #e57373;
+}
+
+.edit-button:hover {
+  background-color: #5dccff;
+}
+
+.delete-button:hover {
+  background-color: #f58989;
 }
 </style>
