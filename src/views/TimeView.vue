@@ -20,7 +20,7 @@
           <td colspan="4" class="mx-auto text-center">ไม่มีข้อมูล</td>
         </tr>
         <tr v-for="(item, index) in filteredItems" :key="index">
-          <td>{{ item.ผู้รับ }}</td>
+          <td>{{ item.R_name }}</td>
           <td>{{ item.stretcher_register_send_time }}</td>
           <td>{{ item.stretcher_register_return_time }}</td>
           <td>{{ formatDate(item.stretcher_register_accept_date) }}</td>

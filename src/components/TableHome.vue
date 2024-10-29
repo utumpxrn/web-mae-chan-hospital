@@ -39,7 +39,7 @@ export default {
     const selectedDate = ref('');
 
     const fetchUsers = () => {
-      axios.get('http://localhost/my-draft2/phpchatbot-jew/people.php')
+      axios.get('http://localhost/my-draft2/phpchatbot-jew/statistics.php')
         .then((response) => {
           items.value = response.data;
           console.log(response.data);
@@ -77,7 +77,7 @@ export default {
     const nameCounts = computed(() => {
       const counts = {};
       filteredItems.value.forEach((item) => {
-        const name = item.ผู้รับ.trim(); // Ensure consistent formatting of the names
+        const name = item.R_name.trim(); // Ensure consistent formatting of the names
         if (name) {
           counts[name] = (counts[name] || 0) + 1; // Increment count for each name
         }
@@ -124,7 +124,7 @@ export default {
     };
 
     const calculateTotalTimeForName = (name) => {
-      const itemsForName = filteredItems.value.filter((item) => item.ผู้รับ === name);
+      const itemsForName = filteredItems.value.filter((item) => item.R_name === name);
       let totalSeconds = 0;
 
       itemsForName.forEach((item) => {

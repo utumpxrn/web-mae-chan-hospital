@@ -112,7 +112,7 @@ export default defineComponent({
       });
     };
     onMounted(() => {
-      axios.get('http://localhost:3000/api/timestamp')
+      axios.get('http://localhost/my-draft2/phpchatbot-jew/timestamp.php')
         .then((response) => {
           items.value = response.data;
 

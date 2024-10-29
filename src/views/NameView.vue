@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div>
-      <h2 class="text-3xl" style="text-align: center;">รายชื่อพนักงาน</h2>
+      <h2 class="text-3xl" style="text-align: center; padding-top: 50px;">รายชื่อพนักงาน</h2>
       <div class="mb-4">
         <button class="add-button" @click="showAddModal = true"
         @keydown.enter="showAddModal = true">เพิ่มบุคคล

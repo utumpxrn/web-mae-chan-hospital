@@ -1,6 +1,6 @@
 <template>
   <br>
-  <div class="container">
+  <div class="container" style="padding-top: 50px;">
     <div class="charts">
       <div class="chart">
         <LineChart />
