@@ -77,7 +77,7 @@ export default {
     const nameCounts = computed(() => {
       const counts = {};
       filteredItems.value.forEach((item) => {
-        const name = item.R_name.trim(); // Ensure consistent formatting of the names
+        const name = item.R_name; // Ensure consistent formatting of the names
         if (name) {
           counts[name] = (counts[name] || 0) + 1; // Increment count for each name
         }
