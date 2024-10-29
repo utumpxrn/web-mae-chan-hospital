@@ -23,7 +23,7 @@ export default createStore({
   actions: {
     async login({ commit }, { Username, Password }) {
       try {
-        const response = await axios.post('http://localhost:3000/api/signIn', { Username, Password });
+        const response = await axios.post('http://localhost/my-draft2/phpchatbot-jew/login.php', { Username, Password });
         const { token } = response.data; // Destructure the token from response
         commit('setToken', token);
         commit('setUser', { Username }); // Optionally set user info

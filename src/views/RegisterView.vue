@@ -64,7 +64,7 @@ export default {
     const Name = ref('');
 
     const register = () => {
-      axios.post('http://localhost:3000/api/register/', {
+      axios.post('http://localhost/my-draft2/phpchatbot-jew/register.php', {
         Username: Username.value,
         Email: Email.value,
         Password: Password.value,
