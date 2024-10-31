@@ -64,4 +64,3 @@ function handleLogin($pdo, $input) {
         echo json_encode(['error' => 'An error occurred during login', 'details' => $e->getMessage()]);
     }
 }
-

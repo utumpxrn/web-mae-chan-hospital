@@ -24,7 +24,7 @@ switch ($method) {
         handlePost($pdo, $input);
         break;
     case 'PUT':
-        handleEdit($pdo, $input);
+        handlePut($pdo, $input);
         break;
     case 'DELETE':
         handleDelete($pdo, $input);
@@ -76,80 +76,54 @@ function handlePost($pdo, $input) {
         echo json_encode(['error' => 'Failed to insert data', 'details' => $e->getMessage()]);
     }
 }
-
-function handleEdit($pdo, $input) {
-    try {
-        $ID = $input['ID'] ?? null;
-        $Name = $input['Name'] ?? null;
-        $Role = $input['Role'] ?? null;
-
-        // Validate input
-        if (!$ID || !$Name || !$Role) {
-            http_response_code(400); // Bad Request
+function handlePut($pdo, $input) {
+    try{
+        if (!isset($input['Name']) || !isset($input['Role'])) {
+            http_response_code(400); // 400 Bad Request
             echo json_encode(['message' => 'Missing required fields']);
             return;
         }
+        $name = $input['Name'];
+        $role = $input['Role'];
+        $id = $input['ID'];
 
-        // Check if user exists
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE ID = :ID");
-        $stmt->bindParam(':ID', $ID);
-        $stmt->execute();
-        $existingUser = $stmt->fetch();
+        $sql = "UPDATE users set Name=:name, Role=:role where ID=:id";
+        $stmt = $pdo->prepare($sql);
 
-        if (!$existingUser) {
-            http_response_code(404); // Not Found
-            echo json_encode(['message' => 'User not found']);
-            return;
-        }
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':role', $role);
+        $stmt->bindParam(':id', $id);
 
-        // Update user in the database
-        $stmt = $pdo->prepare("UPDATE users SET Name = :Name, Role = :Role WHERE ID = :ID");
-        $stmt->bindParam(':ID', $ID);
-        $stmt->bindParam(':Name', $Name);
-        $stmt->bindParam(':Role', $Role);
         $stmt->execute();
 
-        http_response_code(200); // OK
-        echo json_encode(['message' => 'User updated successfully']);
-    } catch (PDOException $e) {
-        http_response_code(500); // Internal Server Error
-        echo json_encode(['error' => 'Database error', 'details' => $e->getMessage()]);
+        http_response_code(201); // 201 Created
+        echo json_encode(['message' => 'User created successfully']);
+
+    }catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to insert data', 'details' => $e->getMessage()]);
     }
+
 }
-
 function handleDelete($pdo, $input) {
-    try {
-        $ID = $input['ID'] ?? null;
+    try{
+        $id = $input['ID'];
 
-        // Validate ID input
-        if (!$ID) {
-            http_response_code(400); // Bad Request
-            echo json_encode(['message' => 'Missing required ID']);
-            return;
-        }
+        $sql = "DELETE From users where ID=:id";
+        $stmt = $pdo->prepare($sql);
 
-        // Check if user exists
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE ID = :ID");
-        $stmt->bindParam(':ID', $ID);
-        $stmt->execute();
-        $existingUser = $stmt->fetch();
+        
+        $stmt->bindParam(':id', $id);
 
-        if (!$existingUser) {
-            http_response_code(404); // Not Found
-            echo json_encode(['message' => 'User not found']);
-            return;
-        }
-
-        // Delete user from the database
-        $stmt = $pdo->prepare("DELETE FROM users WHERE ID = :ID");
-        $stmt->bindParam(':ID', $ID);
         $stmt->execute();
 
-        http_response_code(200); // OK
-        echo json_encode(['message' => 'User deleted successfully']);
-    } catch (PDOException $e) {
-        http_response_code(500); // Internal Server Error
-        echo json_encode(['error' => 'Database error', 'details' => $e->getMessage()]);
+        http_response_code(201); // 201 Created
+        echo json_encode(['message' => 'User created successfully']);
+
+    }catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to insert data', 'details' => $e->getMessage()]);
     }
+
 }
 ?>
