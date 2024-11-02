@@ -52,19 +52,21 @@ function handleGet($pdo) {
 
 function handlePost($pdo, $input) {
     try {
-        if (!isset($input['Name']) || !isset($input['Role'])) {
+        if (!isset($input['Name']) || !isset($input['Line_name']) || !isset($input['Role'])) {
             http_response_code(400); // 400 Bad Request
             echo json_encode(['message' => 'Missing required fields']);
             return;
         }
 
         $name = $input['Name'];
+        $line_name = $input['Line_name'];
         $role = $input['Role'];
 
-        $sql = "INSERT INTO users (Name, Role) VALUES (:name, :role)";
+        $sql = "INSERT INTO users (Name, Line_name, Role) VALUES (:name, :line_name, :role)";
         $stmt = $pdo->prepare($sql);
 
         $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':line_name', $line_name);
         $stmt->bindParam(':role', $role);
 
         $stmt->execute();
@@ -78,19 +80,21 @@ function handlePost($pdo, $input) {
 }
 function handlePut($pdo, $input) {
     try{
-        if (!isset($input['Name']) || !isset($input['Role'])) {
+        if (!isset($input['Name']) || !isset($input['Line_name']) || !isset($input['Role'])) {
             http_response_code(400); // 400 Bad Request
             echo json_encode(['message' => 'Missing required fields']);
             return;
         }
         $name = $input['Name'];
+        $line_name = $input['Line_name'];
         $role = $input['Role'];
         $id = $input['ID'];
 
-        $sql = "UPDATE users set Name=:name, Role=:role where ID=:id";
+        $sql = "UPDATE users set Name=:name, Line_name=:line_name, Role=:role where ID=:id";
         $stmt = $pdo->prepare($sql);
 
         $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':line_name', $line_name);
         $stmt->bindParam(':role', $role);
         $stmt->bindParam(':id', $id);
 

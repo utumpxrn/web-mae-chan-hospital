@@ -4,31 +4,32 @@
       <h2 class="text-3xl" style="text-align: center; padding-top: 50px;">รายชื่อพนักงาน</h2>
       <div class="mb-4">
         <button class="add-button" @click="showAddModal = true"
-        @keydown.enter="showAddModal = true">เพิ่มบุคคล
-          +</button>
+        @keydown.enter="showAddModal = true">เพิ่มบุคคล +</button>
       </div>
       <table>
         <thead>
           <tr>
-            <th>ไอดี พนักงาน</th>
-            <th>ชื่อพนักงาน</th>
+            <th class=" w-28">ไอดี พนักงาน</th>
+            <th class=" w-1/4">ชื่อไลน์</th>
+            <th class=" w-2/5">ชื่อพนักงาน</th>
             <th>ตำแหน่ง</th>
-            <th>จัดการ</th>
+            <th class=" w-48">จัดการ</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
             <td>{{ item.ID }}</td>
+            <td>{{ item.Line_name }}</td>
             <td>{{ item.Name }}</td>
             <td>{{ item.Role }}</td>
-           <td>
-            <button class="edit-button" @click="openEditModal(item)">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button class="delete-button" @click="deleteUser(item.ID)">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
+            <td>
+              <button class="edit-button" @click="openEditModal(item)">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button class="delete-button" @click="deleteUser(item.ID)">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -43,7 +44,10 @@
             <label for="Name">ชื่อ:
               <input type="text" id="Name" v-model="newUser.Name" class="input-field" required />
             </label>
-
+            <label for="Line_name">ชื่อไลน์:
+              <input type="text" id="Line_name" v-model="newUser.Line_name"
+              class="input-field" required />
+            </label>
             <label for="Role">ตำแหน่ง:
               <input type="text" id="Role" v-model="newUser.Role" class="input-field" required />
             </label>
@@ -64,11 +68,15 @@
               <input type="text" id="editName" v-model="editUser.Name"
               class="input-field" required />
             </label>
-            <label for="editRole">ตำแหน่ง:
-              <input type="text" id="editRole" v-model="editUser.Role"
+            <label for="editLine_name">ชื่อไลน์:
+              <input type="text" id="editLine_name" v-model="editUser.Line_name"
               class="input-field" required />
-            </label>
-            <button type="submit" class="submit-button">อัปเดต</button>
+              </label>
+              <label for="editRole">ตำแหน่ง:
+                <input type="text" id="editRole" v-model="editUser.Role"
+                class="input-field" required />
+              </label>
+              <button type="submit" class="submit-button">อัปเดต</button>
           </form>
         </div>
       </div>
@@ -87,8 +95,10 @@ export default {
     const items = ref([]);
     const showAddModal = ref(false);
     const showEditModal = ref(false);
-    const newUser = ref({ Name: '', Role: '' });
-    const editUser = ref({ ID: '', Name: '', Role: '' });
+    const newUser = ref({ Name: '', Line_name: '', Role: '' });
+    const editUser = ref({
+      ID: '', Name: '', Line_name: '', Role: '',
+    });
 
     const fetchUsers = () => {
       axios.get('http://localhost/my-draft2/phpchatbot-jew/user.php')
@@ -104,12 +114,13 @@ export default {
     const addUser = () => {
       axios.post('http://localhost/my-draft2/phpchatbot-jew/user.php', {
         Name: newUser.value.Name,
+        Line_name: newUser.value.Line_name,
         Role: newUser.value.Role,
       })
         .then(() => {
           fetchUsers(); // Refresh the list
           showAddModal.value = false; // Close the modal
-          newUser.value = { Name: '', Role: '' }; // Reset the form
+          newUser.value = { Name: '', Line_name: '', Role: '' }; // Reset the form
         })
         .catch((error) => {
           console.error('There was an error adding the user:', error);
@@ -123,14 +134,17 @@ export default {
 
     const updateUser = () => {
       axios.put('http://localhost/my-draft2/phpchatbot-jew/user.php', {
-        ID: editUser.value.ID, // ID of the user to be updated
+        ID: editUser.value.ID,
+        Line_name: editUser.value.Line_name,
         Name: editUser.value.Name,
         Role: editUser.value.Role,
       })
         .then(() => {
           fetchUsers(); // Refresh the user list after updating
           showEditModal.value = false; // Close the edit modal
-          editUser.value = { ID: '', Name: '', Role: '' }; // Reset the edit form
+          editUser.value = {
+            ID: '', Line_name: '', Name: '', Role: '',
+          }; // Reset the edit form
         })
         .catch((error) => {
           console.error('There was an error updating the user:', error);

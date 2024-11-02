@@ -25,7 +25,7 @@ switch ($method) {
 
 function handleRegister($pdo, $input) {
     try {
-        if (empty($input['Username']) || empty($input['Email']) || empty($input['Password']) || empty($input['Name'])) {
+        if (empty($input['Username']) || empty($input['Email']) || empty($input['Password']) || empty($input['Name'])){
             http_response_code(400);
             echo json_encode(['error' => 'All fields (Username, Email, Password, Name) are required']);
             exit;
@@ -35,7 +35,6 @@ function handleRegister($pdo, $input) {
         $email = $input['Email'];
         $password = $input['Password'];
         $name = $input['Name'];
-
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             http_response_code(400);
             echo json_encode(['error' => 'Invalid email format']);
