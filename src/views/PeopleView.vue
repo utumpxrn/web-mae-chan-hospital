@@ -3,7 +3,7 @@
     <br>
     <label for="selectedOption" class="relative w-full ml-90 h-10 rounded-md">
       <select id="name-select" v-model="selectedOption"
-        class="flex ml-auto items-end w-1/5 h-full rounded-md appearance-none bg-white border
+      class="flex ml-auto items-end w-1/5 h-full rounded-md appearance-none bg-white border
         border-gray-300
         text-gray-900 px-3 py-2 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-600">
         <option value="ทั้งหมด">ทั้งหมด</option>
@@ -14,7 +14,7 @@
     </label>
     <br>
     <label for="date" style="margin-left: 10px">
-      <input type="date" v-model="selectedDate" class="border border-black rounded-md px-2"/>
+      <input type="date" v-model="selectedDate" class="border border-black rounded-md px-2" />
     </label>
     <br><br>
     <div class="grid">
@@ -39,7 +39,7 @@
           <td>{{ formatDate(item.stretcher_register_accept_date) }}</td>
           <td>{{ item.from_depcode }}</td>
           <td>{{ item.send_depcode }}</td>
-          <td>{{ item.stretcher_work_status_id }}</td>
+          <td>{{ item.stretcher_work_status_name }}</td>
         </tr>
       </tbody>
     </table>
@@ -101,22 +101,22 @@ export default {
       // const matchDate = selectedDate.value === getTodayDate();
 
       return sortedItems.filter((item) => {
-        const isNameMatch = matchName || item.ผู้รับ === selectedOption.value;
+        const isNameMatch = matchName || item.Name === selectedOption.value;
         const isDateMatch = !selectedDate.value
-         || formatDate(item.stretcher_register_accept_date) === selectedDate.value;
+          || formatDate(item.stretcher_register_accept_date) === selectedDate.value;
         return isNameMatch && isDateMatch;
       });
     });
 
     // Unique names for the dropdown
     const uniqueNames = computed(() => {
-      const namesSet = new Set(items.value.map((item) => item.ผู้รับ));
+      const namesSet = new Set(items.value.map((item) => item.Name));
       return Array.from(namesSet);
     });
 
     // Filter completed items
     const completedItems = computed(() => filteredItems
-      .value.filter((item) => item.stretcher_work_status_id === 3));
+      .value.filter((item) => item.stretcher_work_status_id === 4));
 
     return {
       items,
@@ -139,12 +139,15 @@ export default {
   padding-right: 4rem;
   padding-left: 4rem;
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
   background: #FFFFFF;
 }
-th, td {
+
+th,
+td {
   border: 1px solid #dddddd;
   padding: 8px;
   text-align: center;
@@ -182,7 +185,8 @@ th, td {
   table-layout: fixed;
 }
 
-thead, tbody tr {
+thead,
+tbody tr {
   display: table;
   width: 100%;
   table-layout: fixed;

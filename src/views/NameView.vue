@@ -3,8 +3,9 @@
     <div>
       <h2 class="text-3xl" style="text-align: center; padding-top: 50px;">รายชื่อพนักงาน</h2>
       <div class="mb-4">
-        <button class="add-button" @click="showAddModal = true"
-        @keydown.enter="showAddModal = true">เพิ่มบุคคล +</button>
+        <button class="add-button"
+        @click="showAddModal = true" @keydown.enter="showAddModal = true">เพิ่มบุคคล
+          +</button>
       </div>
       <table>
         <thead>
@@ -60,8 +61,8 @@
       <!-- Edit Employee Modal -->
       <div v-if="showEditModal" class="modal">
         <div class="modal-content">
-          <span class="close" @click="showEditModal = false"
-          @keydown.space="showAddModal = false">&times;</span>
+          <span class="close"
+          @click="showEditModal = false" @keydown.space="showAddModal = false">&times;</span>
           <h2>แก้ไขบุคคล</h2>
           <form @submit.prevent="updateUser">
             <label for="editName">ชื่อ:
@@ -71,12 +72,12 @@
             <label for="editLine_name">ชื่อไลน์:
               <input type="text" id="editLine_name" v-model="editUser.Line_name"
               class="input-field" required />
-              </label>
-              <label for="editRole">ตำแหน่ง:
-                <input type="text" id="editRole" v-model="editUser.Role"
-                class="input-field" required />
-              </label>
-              <button type="submit" class="submit-button">อัปเดต</button>
+            </label>
+            <label for="editRole">ตำแหน่ง:
+              <input type="text" id="editRole" v-model="editUser.Role"
+              class="input-field" required />
+            </label>
+            <button type="submit" class="submit-button">อัปเดต</button>
           </form>
         </div>
       </div>

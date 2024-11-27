@@ -77,7 +77,7 @@ export default {
     const nameCounts = computed(() => {
       const counts = {};
       filteredItems.value.forEach((item) => {
-        const name = item.R_name; // Ensure consistent formatting of the names
+        const name = item.Name; // Ensure consistent formatting of the names
         if (name) {
           counts[name] = (counts[name] || 0) + 1; // Increment count for each name
         }
@@ -124,7 +124,7 @@ export default {
     };
 
     const calculateTotalTimeForName = (name) => {
-      const itemsForName = filteredItems.value.filter((item) => item.R_name === name);
+      const itemsForName = filteredItems.value.filter((item) => item.Name === name);
       let totalSeconds = 0;
 
       itemsForName.forEach((item) => {
@@ -179,7 +179,7 @@ td {
 }
 
 th {
-  background-color:rgb(113, 207, 238);
+  background-color: rgb(113, 207, 238);
   font-weight: bold;
 }
 

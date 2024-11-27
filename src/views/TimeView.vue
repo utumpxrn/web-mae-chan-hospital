@@ -1,11 +1,11 @@
 <template>
   <br>
-<div class="container">
-  <h2 style="text-align: center;">บันทึกเวลาการทำงาน</h2>
-  <label for="date" style="margin-left: 10px">
-    <input type="date" v-model="selectedDate"/>
-  </label>
-  <br><br>
+  <div class="container">
+    <h2 style="text-align: center;">บันทึกเวลาการทำงาน</h2>
+    <label for="date" style="margin-left: 10px">
+      <input type="date" v-model="selectedDate" />
+    </label>
+    <br><br>
     <table>
       <thead>
         <tr>
@@ -20,14 +20,14 @@
           <td colspan="4" class="mx-auto text-center">ไม่มีข้อมูล</td>
         </tr>
         <tr v-for="(item, index) in filteredItems" :key="index">
-          <td>{{ item.R_name }}</td>
+          <td>{{ item.Name }}</td>
           <td>{{ item.stretcher_register_send_time }}</td>
           <td>{{ item.stretcher_register_return_time }}</td>
           <td>{{ formatDate(item.stretcher_register_accept_date) }}</td>
         </tr>
       </tbody>
     </table>
-</div>
+  </div>
 </template>
 
 <script>
@@ -97,36 +97,42 @@ export default {
 </script>
 
 <style scoped>
-.container{
+.container {
   width: 100%;
   margin-right: auto;
   margin-left: auto;
   padding-right: 4rem;
   padding-left: 4rem;
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
 }
-th, td {
+
+th,
+td {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
   background-color: #FFFFFF;
   text-align: center;
 }
+
 th {
   background-color: #f2f2f2;
   text-align: center;
 }
-h2{
+
+h2 {
   font-size: 32px;
   color: #FFFFFF;
 }
 
 .scrollable-tbody {
   display: block;
-  max-height: 400px; /* Adjust this value as needed */
+  max-height: 400px;
+  /* Adjust this value as needed */
   overflow-y: auto;
 }
 
@@ -136,7 +142,8 @@ h2{
   table-layout: fixed;
 }
 
-thead, tbody tr {
+thead,
+tbody tr {
   display: table;
   width: 100%;
   table-layout: fixed;
